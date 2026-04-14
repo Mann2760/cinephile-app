@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 // ─── DATA ────────────────────────────────────────────────────────────────────
 
@@ -98,6 +99,7 @@ const REGIONS = [
 ];
 
 const getRegionColor = (regionId) => REGIONS.find(r => r.id === regionId)?.color || "#c9a96e";
+export { MOVIES };
 
 // ─── STAR RATING ──────────────────────────────────────────────────────────────
 const StarRating = ({ rating, size = 12 }) => {
@@ -120,13 +122,15 @@ const StarRating = ({ rating, size = 12 }) => {
 };
 
 // ─── MOVIE CARD ───────────────────────────────────────────────────────────────
-const MovieCard = ({ movie, isWishlisted, onWishlist, onSelect, index }) => {
+
+const MovieCard = ({ movie, isWishlisted, onWishlist, index }) => {
+  const navigate = useNavigate();
   const [hovered, setHovered] = useState(false);
   const [imgError, setImgError] = useState(false);
 
   return (
     <div
-      onClick={() => onSelect(movie)}
+      onClick={() => navigate(`/movie/${movie.id}`)}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       style={{
@@ -295,7 +299,7 @@ const MovieCard = ({ movie, isWishlisted, onWishlist, onSelect, index }) => {
 
 // ─── MODAL ────────────────────────────────────────────────────────────────────
 const Modal = ({ movie, isWishlisted, onWishlist, onClose }) => {
-  const [imgError, setImgError] = useState(false);
+  const [imgError, setImgError] = useState(null);
   useEffect(() => {
     const h = (e) => { if (e.key === "Escape") onClose(); };
     document.body.style.overflow = "hidden";
@@ -839,14 +843,6 @@ export default function App() {
         </footer>
       </div>
 
-      {/* ── MODAL ── */}
-      {selectedMovie && (
-        <Modal movie={selectedMovie}
-          isWishlisted={wishlist.has(selectedMovie.id)}
-          onWishlist={toggleWishlist}
-          onClose={() => setSelectedMovie(null)}
-        />
-      )}
     </>
   );
 }
